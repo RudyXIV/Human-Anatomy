@@ -1,6 +1,8 @@
 package gq.rxdy.human.parts;
 
 import gq.rxdy.human.innards.Esophagus;
+import gq.rxdy.human.matter.Matter;
+import gq.rxdy.human.matter.liquids.Acid;
 import gq.rxdy.human.utility.Muscle;
 import gq.rxdy.human.utility.Organ;
 
@@ -20,21 +22,47 @@ public class Brain {
 
      */
 
-    public Brain(){
-        this.organs = new CopyOnWriteArrayList<>();
-        this.muscles = new CopyOnWriteArrayList<>();
+    public Brain() {
+        matterRegistery = new CopyOnWriteArrayList<>();
+        organs = new CopyOnWriteArrayList<>();
+        muscles = new CopyOnWriteArrayList<>();
+
+        registerMatter():
         addOrgans();
         addMuscles();
     }
 
-    public void addOrgans(){
+    public void registerMatter(){
+        matterRegistery.add(new Acid());
+    }
+
+    public static <O extends Organ<?>> O getOrgan(Class<O> oClaass) {
+        for (Organ<?> org : organs) {
+            if (oClaass.isInstance(org)) {
+                return oClaass.cast(org);
+            }
+        }
+        return null;
+    }
+
+    public static <M extends Matter> M getMatterFromRegistry(Class<M> mClass){
+        for(Matter m : matterRegistery){
+            if(mClass.isInstance(m)){
+                return mClass.cast(m);
+            }
+        }
+        return null;
+    }
+
+    public void addOrgans() {
 
     }
 
-    public void addMuscles(){
-        this.muscles.add(new Esophagus());
+    public void addMuscles() {
+        muscles.add(new Esophagus());
     }
 
-    public List<Organ<?>> organs;
-    public List<Muscle<?>> muscles;
+    protected static List<Organ<?>> organs;
+    protected static List<Muscle<?>> muscles;
+    protected static List<Matter> matterRegistery;
 }
